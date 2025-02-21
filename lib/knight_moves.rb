@@ -1,19 +1,21 @@
 class KnightMoves
+  KNIGHT_MOVES = [
+    [2, 1], [2, -1], [-2, 1], [-2, -1],
+    [1, 2], [1, -2], [-1, 2], [-1, -2]
+  ].freeze
+
   def initialize
-    @board = Array.new(8) { Array.new(8, 0) }
-    knight_moves([0, 0], [7, 7])
+    p knight_moves([0, 0], [7, 7])
   end
 
   def knight_moves(start, finish)
     @start = start
     @finish = finish
-    p knight_moves_helper(start, finish)
+    knight_moves_helper(start, finish)
   end
 
-  # Use BFS to find the shortest path
   def knight_moves_helper(start, finish)
-    queue = []
-    queue << [start]
+    queue = [[start]]
     until queue.empty?
       path = queue.shift
       current = path.last
@@ -22,26 +24,18 @@ class KnightMoves
       get_knight_moves(current).each do |move|
         next if path.include?(move)
 
-        new_path = path.dup << move
-        queue << new_path
+        queue << (path + [move])
       end
     end
   end
 
-  # Generates all possible knight moves from a given position
-  def get_knight_moves(start)
-    x, y = start
-    moves = []
-    knight_moves = [
-      [2, 1], [2, -1], [-2, 1], [-2, -1],
-      [1, 2], [1, -2], [-1, 2], [-1, -2]
-    ]
-    knight_moves.each do |move|
-      new_x = x + move[0]
-      new_y = y + move[1]
+  def get_knight_moves(position)
+    x, y = position
+    KNIGHT_MOVES.each_with_object([]) do |(dx, dy), moves|
+      new_x = x + dx
+      new_y = y + dy
       moves << [new_x, new_y] if valid_move?(new_x, new_y)
     end
-    moves
   end
 
   def valid_move?(x, y)
