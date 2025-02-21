@@ -4,24 +4,20 @@ class KnightMoves
     [1, 2], [1, -2], [-1, 2], [-1, -2]
   ].freeze
 
-  def initialize
-    p knight_moves([0, 0], [7, 7])
-  end
-
-  def knight_moves(start, finish)
+  def find_knight_moves(start, finish)
     @start = start
     @finish = finish
-    knight_moves_helper(start, finish)
+    bfs_knight_moves(start, finish)
   end
 
-  def knight_moves_helper(start, finish)
+  def bfs_knight_moves(start, finish)
     queue = [[start]]
     until queue.empty?
       path = queue.shift
       current = path.last
       return path if current == finish
 
-      get_knight_moves(current).each do |move|
+      possible_moves(current).each do |move|
         next if path.include?(move)
 
         queue << (path + [move])
@@ -29,7 +25,7 @@ class KnightMoves
     end
   end
 
-  def get_knight_moves(position)
+  def possible_moves(position)
     x, y = position
     KNIGHT_MOVES.each_with_object([]) do |(dx, dy), moves|
       new_x = x + dx
@@ -42,5 +38,3 @@ class KnightMoves
     x.between?(0, 7) && y.between?(0, 7)
   end
 end
-
-KnightMoves.new
